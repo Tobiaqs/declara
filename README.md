@@ -2,7 +2,7 @@
 
 Programmatically fill out your Boreas declaration forms with Python.
 
-See `app.py` for example use.
+See `example.py` for example use.
 
 ## Environment variables
 This package requires the following environment variables to be set:

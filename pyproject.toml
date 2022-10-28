@@ -20,6 +20,7 @@ file = "LICENSE"
 
 [project.urls]
 Home = "https://leanslate.nl/"
+source = "https://github.com/Tobiaqs/declara"
 
 [tool.flit.external-data]
 directory = "declara"

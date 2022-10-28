@@ -90,7 +90,7 @@ class Declara:
             body.replace("[EXPIRY]", expiry_date.strftime("%d-%m-%Y"))
             .replace("[NAME]", self.name)
             .replace("[TOTAL]", f"€{total:.2f}".replace(".", ","))
-            .replace("[JOKE]", r.content.decode("utf-8"))
+            .replace("[JOKE]", "\n".join(map(lambda s: ">  " + s, r.content.decode("utf-8").splitlines())))
         )
 
         pdf.name = f"Declaratie {ds[2]}-{ds[1]}-{ds[0]}.pdf"

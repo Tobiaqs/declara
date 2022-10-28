@@ -1,6 +1,6 @@
 """Declara, a library for generating Boreas declaration forms"""
 
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 
 import base64
 from collections import namedtuple
@@ -170,7 +170,7 @@ class Declara:
                 new_pdf = PdfReader(buf)
                 page.mergePage(new_pdf.getPage(0))
             elif attachment.lower().endswith(".pdf"):
-                pdf = PdfReader(r.raw)
+                pdf = PdfReader(BytesIO(r.content))
                 for i in range(pdf.getNumPages()):
                     self.writer.add_page(pdf.getPage(i))
 

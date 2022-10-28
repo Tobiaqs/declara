@@ -1,6 +1,6 @@
 """Declara, a library for generating Boreas declaration forms"""
 
-__version__ = "1.0"
+__version__ = "1.0.1"
 
 import base64
 from collections import namedtuple

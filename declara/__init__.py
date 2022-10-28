@@ -155,9 +155,21 @@ class Declara:
 
                 buf = BytesIO()
                 can = canvas.Canvas(buf)
+                img = PIL.Image.open(BytesIO(r.content))
+                size = img.size
+                max_w = 600
+                max_h = 900
+                if size[0] > max_w:
+                    size = (max_w, size[1] / size[0] * max_w)
+
+                if size[1] > max_h:
+                    size = (size[0] / size[1] * max_h, max_h)
+
+                if size != img.size:
+                    img.thumbnail(size)
 
                 can.drawImage(
-                    ImageReader(PIL.Image.open(BytesIO(r.content))),
+                    ImageReader(img),
                     100,
                     75,
                     width=400,

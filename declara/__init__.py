@@ -1,6 +1,6 @@
 """Declara, a library for generating Boreas declaration forms"""
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 import base64
 from collections import namedtuple
@@ -19,6 +19,7 @@ from reportlab.pdfgen import canvas
 
 class Declara:
     Row = namedtuple("Row", ["description", "amount"])
+    Attachment = namedtuple("Attachment", ["buffer", "is_image", "is_pdf"])
 
     def __init__(self):
         self.reader = PdfReader(resources.open_binary("declara", "Declaratieformulier_v3F.pdf"))
@@ -145,9 +146,19 @@ class Declara:
         self.writer.update_page_form_field_values(self.writer.pages[0], data)
 
         for attachment in self.attachments:
-            r = requests.get(attachment)
+            if type(attachment) == str:
+                r = requests.get(attachment)
+                f = BytesIO(r.content)
+                is_image = attachment.split(".")[-1].lower() in ["png", "jpeg", "jpg"]
+                is_pdf = attachment.lower().endswith(".pdf")
+            elif isinstance(attachment, Declara.Attachment):
+                is_image = attachment.is_image
+                is_pdf = attachment.is_pdf
+                f = attachment.buffer
+            else:
+                continue
 
-            if attachment.split(".")[-1].lower() in ["png", "jpeg", "jpg"]:
+            if is_image:
                 page = self.writer.add_blank_page(
                     self.writer.pages[0].mediaBox.width,
                     self.writer.pages[0].mediaBox.height,
@@ -155,7 +166,7 @@ class Declara:
 
                 buf = BytesIO()
                 can = canvas.Canvas(buf)
-                img = PIL.Image.open(BytesIO(r.content))
+                img = PIL.Image.open(f)
                 size = img.size
                 max_w = 600
                 max_h = 900
@@ -181,8 +192,8 @@ class Declara:
 
                 new_pdf = PdfReader(buf)
                 page.mergePage(new_pdf.getPage(0))
-            elif attachment.lower().endswith(".pdf"):
-                pdf = PdfReader(BytesIO(r.content))
+            elif is_pdf:
+                pdf = PdfReader(f)
                 for i in range(pdf.getNumPages()):
                     self.writer.add_page(pdf.getPage(i))
 
